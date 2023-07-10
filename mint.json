@@ -1,25 +1,25 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Commonbase",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#12A7D3",
-    "light": "#81D7F7",
-    "dark": "#004E7A"
+    "primary": "#374A33",
+    "light": "#FFEAC2",
+    "dark": "#374A33"
   },
   "topbarLinks": [
     {
       "name": "Documentation",
-      "url": "https://mintlify.com/docs"
+      "url": "https://docs.commonbase.com"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://commonbase.com"
   },
   "tabs": [
     {
@@ -51,9 +51,9 @@
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "twitter": "https://twitter.com/commonbaseHQ",
+    "github": "https://github.com/commonbaseapp",
+    "linkedin": "https://www.linkedin.com/company/commonbase"
   },
   "backgroundImage": "/background.png"
 }

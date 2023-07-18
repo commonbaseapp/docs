@@ -1,10 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Commonbase",
-  "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
-  },
   "favicon": "/favicon.png",
   "colors": {
     "primary": "#374A33",
@@ -30,7 +26,7 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "Essentials",

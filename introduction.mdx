@@ -1,60 +1,34 @@
 ---
 title: Introduction
-description: 'Commonbase is a developer tool for building fast, reliable and private LLM integrations.'
+description: "Commonbase is a developer tool for building fast, reliable and private LLM integrations."
 ---
 
-## Setting up
+## Creating an Account
 
-The first step to world-class documentation is setting up your editing environnments.
+When you sign up for a new Commonbase account, you will be asked to create your first
+`Workspace` and `Project`.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development.
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect.
-  </Card>
-</CardGroup>
+### Workspaces
 
-## Make it yours
+A `Workspace` is logically like a comapny or an organization. Every workspace has
+it's own subscription and usage caps. They can contain muntiple `Projects`.
 
-Update your docs to your brand and add valuable content for the best user conversion.
+### Projects
+
+A `Project` is logically like a product or a feature. PII detection, invocation monitoring,
+and user logging all operate within the context of a `Project`.
+
+To use Commonbase, you must send a `Project` ID with every request.
+
+## Getting Started
+
+One you have a `Project` ID, use one of our SDKs to quickly get started with Commonbase.
 
 <CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands.
+  <Card title="Python SDK" icon="python" href="quickstart/python">
+    Get started quickly with Commonbase in Python.
   </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec.
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users.
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation.
+  <Card title="JavaScript SDK" icon="js" href="quickstart/js">
+    Use Commonbase in-browser or with Node.js. TypeScript support included.
   </Card>
 </CardGroup>

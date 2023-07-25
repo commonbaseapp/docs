@@ -1,0 +1,105 @@
+---
+title: "JavaScript"
+description: "Start developing with Commonbase + JavaScript/TypeScript"
+icon: "js"
+---
+
+> Last updated for npm packave version `0.10.0`
+
+The Commonbase npm package is usable is all modern browsers and Node.js environments.
+It also includes TypeScript support.
+
+## Installation
+
+Install the [Commonbase SDK package](https://www.npmjs.com/package/@commonbase/sdk) using `npm`:
+
+```
+npm install @commonbase/sdk
+```
+
+## Usage
+
+A Project ID is required for all Commonbase requests. You can find your Project ID
+in the [Commonbase Dashboard](https://commonbase.com/).
+
+### Text Completion
+
+To create a basic text completion, use the `Client.createCompletion` method with a `prompt` argument.
+
+```ts
+import { Client } from "@commonbase/sdk";
+
+const client = new Client();
+
+const completion = await client.createCompletion({
+  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  prompt: "Hello",
+});
+
+console.log(completion.bestResult);
+```
+
+### Chat Completion
+
+To create a chat completion, use the `chatContext` argument to provide a list of chat messages.
+You must also set the OpenAI configuration to `chat`. In this mode, the `prompt` argument
+functions as a system message.
+
+```ts
+import { Client } from "@commonbase/sdk";
+
+const client = new Client();
+
+const completionResult = await client.createCompletion({
+  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  prompt: "You are an assistant who helps users with tech problems.",
+  chatContext: {
+    messages: [
+      { role: "user", content: "My internet isn't working." },
+      { role: "assistant", content: "Have you tried restarting your router?" },
+      { role: "user", content: "Yes I've tried that." },
+    ],
+  },
+  providerConfig: {
+    provider: "cb-openai-eu",
+    params: {
+      type: "chat",
+    },
+  },
+});
+
+console.log(completionResult.bestResult);
+```
+
+## Streaming
+
+To receive the completion response as it is generated, use the `Client.createStreamingCompletion` method.
+
+Streaming is useful when you want to display a completion "as it is typed" for an experience similar
+to that of ChatGPT.
+
+For longer completions, streaming also lets you avoid hanging while you wait for a completed response
+from `Client.createCompletion`.
+
+```ts
+import * as process from "process";
+import { Client } from "@commonbase/sdk";
+
+const client = new Client();
+
+const completionStream = await client.createStreamingCompletion({
+  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  prompt: "Write me a short essay about artificial intelligence.",
+});
+
+for await (const result of completionStream) {
+  if (completionResult.completed) {
+    process.stdout.write("\n\n");
+    console.log("streamCompleted", completionResult);
+    continue;
+  }
+  process.stdout.write(completionResult.bestResult);
+}
+
+console.log("done");
+```

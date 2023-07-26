@@ -14,7 +14,7 @@ The Commonbase npm package supports Node.js v18 and later. It also includes Type
   requests to Commonbase on your behalf.
 </Warning>
 
-## Installation
+# Installation
 
 Install the [Commonbase SDK package](https://www.npmjs.com/package/@commonbase/sdk) using your
 preferred package manager:
@@ -25,12 +25,14 @@ yarn add @commonbase/sdk
 pnpm add @commonbase/sdk
 ```
 
-## Usage
+# Usage
 
 A Project ID is required for all Commonbase requests. You can find your Project ID
 in the [Commonbase Dashboard](https://commonbase.com/).
 
-### Text Completion
+## Completions
+
+### Text
 
 To create a basic text completion, use the `Client.createCompletion` method with a `prompt` argument.
 
@@ -47,7 +49,7 @@ const completion = await client.createCompletion({
 console.log(completion.bestResult);
 ```
 
-### Chat Completion
+### Chat
 
 To create a chat completion, use the `chatContext` argument to provide a list of chat messages.
 You must also set the OpenAI configuration to `chat`. In this mode, the `prompt` argument
@@ -79,7 +81,7 @@ const completionResult = await client.createCompletion({
 console.log(completionResult.bestResult);
 ```
 
-## Streaming
+### Streaming
 
 To receive the completion response as it is generated, use the `Client.createStreamingCompletion` method.
 
@@ -110,4 +112,37 @@ for await (const result of completionStream) {
 }
 
 console.log("done");
+```
+
+## Embeddings
+
+An embedding is a vector (list) of floating point numbers. The distance between two vectors
+measures their relatedness. Small distances suggest high relatedness and large distances
+suggest low relatedness.
+
+To learn more about embeddings, see:
+
+- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
+- [Microsoft: What are Embeddings?](https://learn.microsoft.com/en-us/semantic-kernel/memories/embeddings)
+
+Commonbase supports embeddings through OpenAI's `text-embedding-ada-002` model.
+
+```ts
+import { Client } from "@commonbase/sdk";
+
+const client = new Client();
+
+const embeddingsResponse = await client.createEmbedding({
+  input: "Your text string",
+  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  providerConfig: {
+    provider: "cb-openai-eu",
+    params: {
+      type: "embeddings",
+      model: "text-embedding-ada-002",
+    },
+  },
+});
+
+console.log(embeddingsResponse.data);
 ```

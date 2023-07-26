@@ -17,6 +17,12 @@
     "name": "Dashboard",
     "url": "https://commonbase.com"
   },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
   "navigation": [
     {
       "group": "Commonbase",
@@ -25,6 +31,14 @@
     {
       "group": "Quickstart",
       "pages": ["quickstart/javascript", "quickstart/python"]
+    },
+    {
+      "group": "Completions",
+      "pages": ["api-reference/endpoint/completions"]
+    },
+    {
+      "group": "Embeddings",
+      "pages": ["api-reference/endpoint/embeddings"]
     }
   ],
   "footerSocials": {

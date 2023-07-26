@@ -1,0 +1,257 @@
+---
+title: "/completions"
+api: "POST https://api.commonbase.com/completions"
+description: "Generate or stream a new completion."
+---
+
+### Body
+
+<ParamField body="projectId" type="string" required>
+  The Commonbase project ID.
+</ParamField>
+
+<ParamField body="userId" type="string">
+  An optional custom string used to identify users in the invocation logs.
+</ParamField>
+
+<ParamField body="prompt" type="string">
+  The text used to generate a completion.
+
+Also functions as a `system` message when `providerConfig.params.type: 'chat'` is set.
+
+</ParamField>
+
+<ParamField body="context" type="ChatContext">
+  A list of messages that represent the chat context.
+  `providerConfig.params.type` must be set to `'chat'`, otherwise this context
+  is ignored.
+  <Expandable title="ChatContext">
+    <ResponseField name="messages" type="ChatMessage[]">
+      A list of messages that represent a chat conversation.
+      <Expandable title="ChatMessage Properties">
+        <ParamField body="role" type="'system' | 'assistant' | 'user'">
+          The role of the chat message.
+        </ParamField>
+        <ParamField body="content" type="string">
+          The content of the chat message.
+        </ParamField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="providerConfig" type="ProviderConfig">
+  The completion provider configuration. A different configuration object is
+  used for each provider.
+
+  <Expandable title="OpenAI ProviderConfig Properties">
+    <ParamField body="provider" type="'openai' | 'cb-openai-eu'">
+      Commonbase currently supports two options when using the OpenAI provider:
+
+      - `'openai'`: Use OpenAI with your own api keys.
+      - `'cb-openai-eu'`: Use Commonbase's OpenAI LLM service, hosted on Azure.
+    </ParamField>
+    <ParamField body="params" type='OpenAIParams'>
+      Additional parameters that are forwarded to the
+      [OpenAI Completions endpoint](https://platform.openai.com/docs/api-reference/completions/create)
+      <Expandable title="OpenAIParams Properties">
+        <ParamField body="type" type="'chat' | 'text'" required>
+          The type of the completion. When set to `chat`, a `context` with chat
+          messages must be provided.
+        </ParamField>
+        <ParamField body="model" type="string">
+          The OpenAI Model to use for the completion.
+
+          [OpenAI Docs: completion.model](https://platform.openai.com/docs/api-reference/completions/create#completions/create-model)
+        </ParamField>
+        <ParamField body="temperature" type="float">
+          [OpenAI Docs: completion.temperature](https://platform.openai.com/docs/api-reference/completions/create#completions/create-prompt)
+        </ParamField>
+        <ParamField body="top_p" type="float">
+          [OpenAI Docs: completion.top_p](https://platform.openai.com/docs/api-reference/completions/create#completions/create-top_p)
+        </ParamField>
+        <ParamField body="max_tokens" type="int">
+          [OpenAI Docs: completion.max_tokens](https://platform.openai.com/docs/api-reference/completions/create#completions/create-max_tokens)
+        </ParamField>
+        <ParamField body="n" type="int">
+          [OpenAI Docs: completion.n](https://platform.openai.com/docs/api-reference/completions/create#completions/create-n)
+        </ParamField>
+        <ParamField body="frequency_penalty" type="float">
+          [OpenAI Docs: completion.frequency_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-frequency_penalty)
+        </ParamField>
+        <ParamField body="presence_penalty" type="float">
+          [OpenAI Docs: completion.presence_penalty](https://platform.openai.com/docs/api-reference/completions/create#completions/create-presence_penalty)
+        </ParamField>
+        <ParamField body="stop" type="string | string[]">
+          [OpenAI Docs: completion.stop](https://platform.openai.com/docs/api-reference/completions/create#completions/create-stop)
+        </ParamField>
+        <ParamField body="best_of" type="int">
+          [OpenAI Docs: completion.best_of](https://platform.openai.com/docs/api-reference/completions/create#completions/create-best_of)
+        </ParamField>
+        <ParamField body="suffix" type="string">
+          [OpenAI Docs: completion.suffix](https://platform.openai.com/docs/api-reference/completions/create#completions/create-suffix)
+        </ParamField>
+        <ParamField body="logprobs" type="int">
+          [OpenAI Docs: completion.logprobs](https://platform.openai.com/docs/api-reference/completions/create#completions/create-logprobs)
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+  </Expandable>
+
+  <Expandable title="Anthropic ProviderConfig Properties">
+    <ParamField body="provider" type="'anthropic'">
+      This field must be set to `'anthropic'` to use the Anthropic provider.
+    </ParamField>
+    <ParamField body="params" type='AnthropicParams'>
+      <Expandable title="AnthropicParams Properties">
+        Additional parameters that are forwarded to the
+        [Anthropic Completions endpoint](https://docs.anthropic.com/claude/reference/complete_post)
+        <ParamField body="type" type="'chat'">
+          The type of the completion.
+        </ParamField>
+        <ParamField body="model" type="string">
+          The Anthropic Model to use for the completion.
+
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+        <ParamField body="max_tokens_to_sample" type="int">
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+        <ParamField body="temperature" type="float">
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+        <ParamField body="stop_sequences" type="string[]">
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+        <ParamField body="top_k" type="float">
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+        <ParamField body="top_p" type="float">
+          See [Anthropic Docs: Create a completion](https://docs.anthropic.com/claude/reference/complete_post)
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+<ParamField body="stream" type="boolean" default="false">
+  Determines whether to stream a response as it is generated.
+</ParamField>
+
+### Success Response
+
+<ResponseField name="completed" type="boolean">
+  Indicates whether the completion is finished. `completed` may be `false` while
+  streaming a partial response.
+</ResponseField>
+
+<ResponseField name="invocationId" type="string">
+  The ID of the invocation.
+</ResponseField>
+
+<ResponseField name="projectId" type="string">
+  The ID of the project.
+</ResponseField>
+
+<ResponseField name="type" type="'chat' | 'text'">
+  The type of the completion response.
+</ResponseField>
+
+<ResponseField name="model" type="string">
+  The name of the LLM model used for the completion.
+</ResponseField>
+
+<ResponseField name="choices" type="object[]">
+
+The result of the completion. The structure of this object may vary depending on the provider
+and `type` of completion that is requested.
+
+See provider documentation for more details:
+
+- [OpenAI](https://platform.openai.com/docs/api-reference/introduction)
+- [Anthropic](https://docs.anthropic.com/claude/reference/complete_post)
+
+</ResponseField>
+
+### Error Response
+
+<ResponseField name="error" type="string">
+  An error message explaining why the response failed.
+</ResponseField>
+
+<ResponseField name="invocationId" type="string">
+  The ID of the invocation.
+</ResponseField>
+
+<RequestExample>
+
+```bash Text Completion
+curl --location --request POST 'https://api.commonbase.com/completions' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "projectId": "<your_project_id>",
+  "prompt": "Hello!",
+  "providerConfig": {
+    "provider": "cb-openai-eu",
+    "params": {
+      "type": "text",
+      "model": "<model_name>"
+    }
+  }
+}'
+```
+
+```bash Chat Completion
+curl --location --request POST 'https://api.commonbase.com/completions' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "projectId": "<your_project_id>",
+  "prompt": "You are a helpful assistant.",
+  "context": {
+    "messages": [
+      { "role": "user", "content": "Can I have some help please?" },
+      { "role": "assistant", "content": "Sure! What can I help you with?" },
+      { "role": "user", "content": "My internet is broken." }
+    ]
+  },
+  "providerConfig": {
+    "provider": "cb-openai-eu",
+    "params": {
+      "type": "chat"
+    }
+  }
+}'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "completed": true,
+  "invocationId": "<invocation_id>",
+  "projectId": "<your_project_id>",
+  "type": "text",
+  "model": "<model_name>",
+  "choices": [
+    {
+      "text": "<completion_response>",
+      "index": 0,
+      "finish_reason": "stop",
+      "logprobs": null
+    }
+  ]
+}
+```
+
+```json Error Response
+{
+  "error": "<error_message>",
+  "invocationId": "<invocation_id>"
+}
+```
+
+</ResponseExample>

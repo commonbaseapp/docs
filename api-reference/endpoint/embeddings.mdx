@@ -1,0 +1,137 @@
+---
+title: "/embeddings"
+api: "POST https://api.commonbase.com/embeddings"
+description: "Generate a new embedding."
+---
+
+### Body
+
+<ParamField body="projectId" type="string" required>
+  The Commonbase project ID.
+</ParamField>
+
+<ParamField body="input" type="string" required>
+  The text used to generate an embedding.
+</ParamField>
+
+<ParamField body="userId" type="string">
+  An optional custom string used to identify users in the invocation logs.
+</ParamField>
+
+<ParamField body="providerConfig" type="ProviderConfig">
+  The embeddings provider configuration. Currently Commonbase only supports 
+  embeddings through OpenAI.
+
+  <Expandable title="OpenAI ProviderConfig Properties">
+    <ParamField body="provider" type="'openai' | 'cb-openai-eu'">
+      Commonbase currently supports two options when using the OpenAI provider:
+
+      - `'openai'`: Use OpenAI with your own api keys.
+      - `'cb-openai-eu'`: Use Commonbase's OpenAI LLM service, hosted on Azure.
+    </ParamField>
+    <ParamField body="params" type='OpenAIParams'>
+      <Expandable title="OpenAIParams Properties">
+        <ParamField body="type" type="'embeddings'" required>
+          Must be set to `embeddings` for this endpoint.
+        </ParamField>
+        <ParamField body="model" type="string">
+          The OpenAI Model to use for the embedding.
+
+          [OpenAI Docs: embeddings.model](https://platform.openai.com/docs/api-reference/embeddings/create#embeddings/create-model)
+        </ParamField>
+      </Expandable>
+    </ParamField>
+
+  </Expandable>
+
+</ParamField>
+
+### Success Response
+
+<ResponseField name="completed" type="boolean">
+  Indicates whether the embedding is finished.
+</ResponseField>
+
+<ResponseField name="invocationId" type="string">
+  The ID of the invocation.
+</ResponseField>
+
+<ResponseField name="projectId" type="string">
+  The ID of the project.
+</ResponseField>
+
+<ResponseField name="type" type="'embeddings'">
+  The type of the response. Always `'embeddings'` for this endpoint.
+</ResponseField>
+
+<ResponseField name="model" type="string">
+  The name of the LLM model used for the embedding.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  The result of the embedding request. See `response.data` in the [OpenAI
+  Docs](https://platform.openai.com/docs/api-reference/embeddings)
+</ResponseField>
+
+### Error Response
+
+<ResponseField name="error" type="string">
+  An error message explaining why the response failed.
+</ResponseField>
+
+<ResponseField name="invocationId" type="string">
+  The ID of the invocation.
+</ResponseField>
+
+<RequestExample>
+
+```bash Embedding Request
+curl --location --request POST 'https://api.commonbase.com/embeddings' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "projectId": "<your_project_id>",
+  "input": "During the business meeting today, we discussed...",
+  "providerConfig": {
+    "provider": "cb-openai-eu",
+    "params": {
+      "type": "embeddings",
+      "model": "<model_name>"
+    }
+  }
+}'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "completed": true,
+  "invocationId": "<invocation_id>",
+  "projectId": "<your_project_id>",
+  "type": "text",
+  "model": "<model_name>",
+  "data": [
+    {
+      "object": "embedding",
+      "index": 0,
+      "embedding": [
+        -0.00894375,
+        -0.009087898,
+        0.028069615,
+        "... 1533 more items"
+      ]
+    }
+  ]
+}
+```
+
+```json Error Response
+{
+  "error": "<error_message>",
+  "invocationId": "<invocation_id>"
+}
+```
+
+</ResponseExample>

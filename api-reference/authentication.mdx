@@ -1,22 +1,21 @@
 ---
 title: "Authentication"
-description: "Example overview page before API endpoints"
+description: "Authenticating Commonbase requests."
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et eros iaculis tortor dapibus cursus. Curabitur quis sapien nec tortor dictum gravida.
+Authenticate Commonbase requests by providing your workspace API key in the
+`Authorization` header.
 
 ```bash
-'Authorization': 'Token <team_token>'
+'Authorization': '<api_key>'
 ```
 
 ## API Tokens
 
-Nullam convallis mauris at nunc consectetur, ac imperdiet leo rutrum. Maecenas cursus purus a pellentesque blandit. Pellentesque vitae lacinia libero, non mollis metus.
-
-Nam id ullamcorper urna, at rutrum enim. [Maecenas vulputate](/introduction) vehicula libero, vitae sodales augue pretium nec. Quisque a magna tempor, semper risus vel, fermentum nunc. Pellentesque fermentum interdum ex, eu convallis massa blandit sed. Aliquam bibendum ipsum vel laoreet auctor.
+// Details about how API keys work.
 
 ### Permissions
 
-Etiam lobortis ut odio ut fermentum. Nunc odio velit, sollicitudin at consectetur id, tristique eget turpis. Aliquam at risus vitae dolor sodales venenatis. In hac habitasse platea dictumst.
-
-Aenean consequat diam eget mollis fermentum. [Quisque eu malesuada](/introduction) felis, non dignissim libero.
+API Keys are scoped to a single Commonbase workspace.
+An API Key provides access to submit invocations for every project
+inside the workspace it is associated with.

@@ -19,8 +19,7 @@ description: "Generate a new embedding."
 </ParamField>
 
 <ParamField body="providerConfig" type="ProviderConfig">
-  The embeddings provider configuration. Currently Commonbase only supports 
-  embeddings through OpenAI.
+  The embeddings provider configuration. Only OpenAI embeddings are supported.
 
   <Expandable title="OpenAI ProviderConfig Properties">
     <ParamField body="provider" type="'openai' | 'cb-openai-eu'">
@@ -65,7 +64,7 @@ description: "Generate a new embedding."
 </ResponseField>
 
 <ResponseField name="model" type="string">
-  The name of the LLM model used for the embedding.
+  The name of the model used for the embedding.
 </ResponseField>
 
 <ResponseField name="data" type="object[]">

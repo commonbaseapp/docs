@@ -4,13 +4,13 @@ description: "Start developing with Commonbase + Python"
 icon: "python"
 ---
 
-> Last updated for pip package version `0.1.4`
+> Last updated for pip package version `0.1.x`
 
 ## Installation
 
 Install the [Commonbase package from PyPI](https://pypi.org/project/commonbase/) using `pip`:
 
-```
+```bash
 pip install commonbase
 ```
 
@@ -21,31 +21,30 @@ in the [Commonbase Dashboard](https://commonbase.com/).
 
 ### Text Completion
 
-To create a basic text completion, use the `Completion.create` class method with a `prompt` argument.
+To create a basic text completion, use `Completion.create` with a `prompt`:
 
 ```py
 import commonbase
 
-project_id="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-
-result = commonbase.Completion.create(project_id=project_id, prompt="Hello!")
+result = commonbase.Completion.create(
+    project_id="<your_project_id>",
+    prompt="Hello!"
+)
 
 print(result.choices[0].text)
 ```
 
 ### Chat Completion
 
-To create a chat completion, use the `chat_context` argument to provide a list of chat messages.
-You must also set the OpenAI configuration to `chat`. In this mode, the `prompt` argument
-functions as a system message.
+To create a chat completion, provide a `chat_context` with list of chat messages and set the
+`provider_config.params.type` to `chat`. In this mode, the `prompt` is prepended to the context
+as a system message.
 
 ```py
 import commonbase
 
-project_id="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-
 result = commonbase.Completion.create(
-    project_id=project_id,
+    project_id="<your_project_id>",
     prompt="You are an assistant who helps users with tech problems.",
     chat_context=commonbase.ChatContext([
         commonbase.ChatMessage(role="user", content="My internet isn't working."),
@@ -62,24 +61,24 @@ print(result.choices[0].text)
 
 ## Streaming
 
-To receive the completion response as it is generated, use the `Completion.stream` class method.
+To stream the completion response as it is generated, use `Completion.stream`.
 
-Streaming is useful when you want to display a completion "as it is typed" for an experience similar
-to that of ChatGPT.
+Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
 
-For longer completions, streaming also lets you avoid hanging while you wait for a completed response
+For longer completions, streaming lets you avoid hanging while you wait for a completed response
 from `Completion.create`.
 
 ```py
 import commonbase
 
-project_id="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-
 result = commonbase.Completion.stream(
-    project_id=project_id,
+    project_id="<your_project_id>",
     prompt="Write me a short essay about artificial intelligence."
 )
 
 for completion in result:
-    print(completion.choices[0].text, end="")
+    if not completion.completed:
+        print(completion.choices[0].text, end="")
+    else:
+        print("\n\ndone")
 ```

@@ -4,14 +4,14 @@ description: "Start developing with Commonbase + JavaScript/TypeScript"
 icon: "js"
 ---
 
-> Last updated for npm package version `0.10.0`
+> Last updated for npm package version `0.11.x`
 
 The Commonbase npm package supports Node.js v18 and later. It also includes TypeScript support.
 
 <Warning>
-  This package is currently intended for server-side usage only. Using it in the
-  browser will expose your project ID. Anyone who has your project ID can make
-  requests to Commonbase on your behalf.
+  This package is meant for server-side usage only. Using it in the browser will
+  expose your project ID. Anyone who has your project ID can make requests to
+  Commonbase on your behalf.
 </Warning>
 
 # Installation
@@ -19,11 +19,21 @@ The Commonbase npm package supports Node.js v18 and later. It also includes Type
 Install the [Commonbase SDK package](https://www.npmjs.com/package/@commonbase/sdk) using your
 preferred package manager:
 
-```
+<CodeGroup>
+
+```bash npm
 npm add @commonbase/sdk
-yarn add @commonbase/sdk
+```
+
+```bash pnpm
 pnpm add @commonbase/sdk
 ```
+
+```bash yarn
+yarn add @commonbase/sdk
+```
+
+</CodeGroup>
 
 # Usage
 
@@ -34,7 +44,7 @@ in the [Commonbase Dashboard](https://commonbase.com/).
 
 ### Text
 
-To create a basic text completion, use the `Client.createCompletion` method with a `prompt` argument.
+To create a basic text completion, use `Client.createCompletion` with a `prompt`:
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -42,18 +52,27 @@ import { Client } from "@commonbase/sdk";
 const client = new Client();
 
 const completion = await client.createCompletion({
-  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  projectId: "<your_project_id>",
   prompt: "Hello",
 });
 
 console.log(completion.bestResult);
 ```
 
+`completion.bestResult` returns the most relevant completion from the. `completion.choices`
+contains the full list of completions returned by the LLM provider:
+
+```ts
+for (const choice of completion.choices) {
+  console.log(choice);
+}
+```
+
 ### Chat
 
-To create a chat completion, use the `chatContext` argument to provide a list of chat messages.
-You must also set the OpenAI configuration to `chat`. In this mode, the `prompt` argument
-functions as a system message.
+To create a chat completion, provide a `chatContext` with a list of chat messages and set
+the `providerConfig.params.type` to `'chat'`. In this mode, the `prompt` is prepended to the
+context as a `'system'` message.
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -61,7 +80,7 @@ import { Client } from "@commonbase/sdk";
 const client = new Client();
 
 const completionResult = await client.createCompletion({
-  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  projectId: "<your_project_id>",
   prompt: "You are an assistant who helps users with tech problems.",
   chatContext: {
     messages: [
@@ -83,22 +102,20 @@ console.log(completionResult.bestResult);
 
 ### Streaming
 
-To receive the completion response as it is generated, use the `Client.createStreamingCompletion` method.
+To stream the completion response as it is generated, use `Client.createStreamingCompletion`.
 
-Streaming is useful when you want to display a completion "as it is typed" for an experience similar
-to that of ChatGPT.
+Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
 
-For longer completions, streaming also lets you avoid hanging while you wait for a completed response
+For longer completions, streaming lets you avoid hanging while you wait for a completed response
 from `Client.createCompletion`.
 
 ```ts
-import * as process from "process";
 import { Client } from "@commonbase/sdk";
 
 const client = new Client();
 
 const completionStream = await client.createStreamingCompletion({
-  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  projectId: "<your_project_id>",
   prompt: "Write me a short essay about artificial intelligence.",
 });
 
@@ -125,7 +142,7 @@ To learn more about embeddings, see:
 - [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings)
 - [Microsoft: What are Embeddings?](https://learn.microsoft.com/en-us/semantic-kernel/memories/embeddings)
 
-Commonbase supports embeddings through OpenAI's `text-embedding-ada-002` model.
+Commonbase supports embeddings through OpenAI's `text-embedding-ada-002` model:
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -134,7 +151,7 @@ const client = new Client();
 
 const embeddingsResponse = await client.createEmbedding({
   input: "Your text string",
-  projectId: "XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX",
+  projectId: "<your_project_id>",
   providerConfig: {
     provider: "cb-openai-eu",
     params: {

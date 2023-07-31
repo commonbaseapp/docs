@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + Python"
 icon: "python"
 ---
 
-> Last updated for pip package version `0.1.x`
+> Last updated for pip package version `0.2.x`
 
 ## Installation
 
@@ -16,8 +16,10 @@ pip install commonbase
 
 ## Usage
 
-A Project ID is required for all Commonbase requests. You can find your Project ID
-in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find your project ID
+and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
+
+To create a completion, provide your Project ID, API Key, and prompt to `Completion.create`.
 
 ### Text Completion
 
@@ -27,11 +29,12 @@ To create a basic text completion, use `Completion.create` with a `prompt`:
 import commonbase
 
 result = commonbase.Completion.create(
-    project_id="<your_project_id>",
+    api_key="YOUR_API_KEY",
+    project_id="YOUR_PROJECT_ID",
     prompt="Hello!"
 )
 
-print(result.choices[0].text)
+print(result.best_result)
 ```
 
 ### Chat Completion
@@ -44,7 +47,8 @@ as a system message.
 import commonbase
 
 result = commonbase.Completion.create(
-    project_id="<your_project_id>",
+    api_key="YOUR_API_KEY",
+    project_id="YOUR_PROJECT_ID",
     prompt="You are an assistant who helps users with tech problems.",
     chat_context=commonbase.ChatContext([
         commonbase.ChatMessage(role="user", content="My internet isn't working."),
@@ -57,6 +61,26 @@ result = commonbase.Completion.create(
 )
 
 print(result.choices[0].text)
+```
+
+### Variables
+
+You can also create a completion by providing variables for your managed prompt on the
+[Commonbase Dashboard](https://commonbase.com/).
+
+```py
+import commonbase
+
+result = commonbase.Completion.create(
+    api_key="YOUR_API_KEY",
+    project_id="YOUR_PROJECT_ID",
+    variables={
+        "user_name": "USERNAME",
+        "email": "USERNAME@COMPANY.COM"
+    }
+)
+
+print(result.best_result)
 ```
 
 ## Streaming
@@ -72,7 +96,8 @@ from `Completion.create`.
 import commonbase
 
 result = commonbase.Completion.stream(
-    project_id="<your_project_id>",
+    api_key="YOUR_API_KEY",
+    project_id="YOUR_PROJECT_ID",
     prompt="Write me a short essay about artificial intelligence."
 )
 

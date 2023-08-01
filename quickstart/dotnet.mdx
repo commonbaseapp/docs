@@ -1,0 +1,101 @@
+---
+title: "C# .NET"
+description: "Start developing with Commonbase + .NET"
+icon: "brackets-curly"
+---
+
+> Last updated for NuGet package version `0.1.x`
+
+## Installation
+
+Install [Commonbase from NuGet](https://www.nuget.org/packages/Commonbase) a package manager or
+the `dotnet` CLI:
+
+```bash
+dotnet package add Commonbase
+```
+
+## Usage
+
+A Project ID is required for all Commonbase requests. You can find your project ID
+in the [Commonbase Dashboard](https://commonbase.com/).
+
+### Text Completion
+
+To create a basic text completion, use `CreateCompletionAsync` with a `prompt`:
+
+```csharp
+using Commonbase;
+
+CommonbaseClient client = new();
+
+var response = await client.CreateCompletionAsync(
+    prompt: "Hello!",
+    projectId: "YOUR_PROJECT_ID"
+);
+
+Console.WriteLine(response.BestResult);
+```
+
+### Chat Completion
+
+To create a chat completion, provide a `chatContext` with list of chat messages and set the
+`ProviderConfig.Params.Type` to `chat`. In this mode, the `prompt` is prepended to the context
+as a system message.
+
+```csharp
+using Commonbase;
+
+CommonbaseClient client = new();
+
+string systemMessage = "You are an assistant who helps users with tech problems.";
+ChatMessage[] messages = new[] {
+    new ChatMessage { Role = MessageRole.User, Content = "My internet isn't working." },
+    new ChatMessage { Role = MessageRole.Assistant, Content = "Have you tried restarting your router?" },
+    new ChatMessage { Role = MessageRole.User, Content = "Yes I've tried that." },
+};
+
+var response = await client.CreateCompletionAsync(
+    prompt: systemMessage,
+    chatContext: new ChatContext { Messages = messages },
+    projectId: "YOUR_PROJECT_ID",
+    providerConfig: new CbOpenAIProviderConfig
+    {
+        Region = CbOpenAIRegion.EU,
+        Params = new()
+        {
+            Type = RequestType.Chat
+        }
+    }
+);
+
+Console.WriteLine(response.BestResult);
+```
+
+## Streaming
+
+To stream the completion response as it is generated, use `StreamCompletionAsync`.
+
+Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
+
+For longer completions, streaming lets you avoid hanging while you wait for a completed response
+from `CreateCompletionAsync`.
+
+```csharp
+using Commonbase;
+
+CommonbaseClient client = new();
+
+var stream = client.StreamCompletionAsync(
+    prompt: "Write me an essay about artificial intelligence.",
+    projectId: "YOUR_PROJECT_ID"
+);
+
+await foreach (CompletionResponse response in stream)
+{
+    if (!response.Completed)
+        Console.Write(response.BestResult);
+    else
+        Console.WriteLine();
+}
+```

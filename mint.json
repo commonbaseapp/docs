@@ -30,7 +30,11 @@
     },
     {
       "group": "Quickstart",
-      "pages": ["quickstart/javascript", "quickstart/python"]
+      "pages": [
+        "quickstart/javascript",
+        "quickstart/python",
+        "quickstart/dotnet"
+      ]
     },
     {
       "group": "Completions",

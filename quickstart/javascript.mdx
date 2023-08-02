@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + JavaScript/TypeScript"
 icon: "node-js"
 ---
 
-> Last updated for npm package version `0.11.x`
+> Last updated for npm package version `0.12.x`
 
 The Commonbase npm package supports Node.js v18 and later. It also includes TypeScript support.
 
@@ -14,7 +14,7 @@ The Commonbase npm package supports Node.js v18 and later. It also includes Type
   Commonbase on your behalf.
 </Warning>
 
-# Installation
+## Installation
 
 Install [Commonbase from npm](https://www.npmjs.com/package/@commonbase/sdk) using your
 preferred package manager:
@@ -35,40 +35,43 @@ yarn add @commonbase/sdk
 
 </CodeGroup>
 
-# Usage
+## Usage
 
-A Project ID is required for all Commonbase requests. You can find your Project ID
-in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find your project ID
+and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
 
-## Completions
+To create a completion, configure a `Client` with your API Key and provide your Project ID
+and prompt to `createCompletion`.
 
-### Text
+### Text Completion
 
 To create a basic text completion, use `Client.createCompletion` with a `prompt`:
 
 ```ts
 import { Client } from "@commonbase/sdk";
 
-const client = new Client();
+const client = new Client({
+  apiKey: "API_KEY",
+});
 
 const completion = await client.createCompletion({
-  projectId: "<your_project_id>",
-  prompt: "Hello",
+  projectId: "PROJECT_ID",
+  prompt: "Hello!",
 });
 
 console.log(completion.bestResult);
 ```
 
-`completion.bestResult` returns the most relevant completion from the. `completion.choices`
-contains the full list of completions returned by the LLM provider:
+`completion.bestResult` returns the most relevant completion.
+`completion.choices` contains the full list of choices returned by the LLM:
 
 ```ts
 for (const choice of completion.choices) {
-  console.log(choice);
+  console.log(choice.text);
 }
 ```
 
-### Chat
+### Chat Completion
 
 To create a chat completion, provide a `chatContext` with a list of chat messages and set
 the `providerConfig.params.type` to `'chat'`. In this mode, the `prompt` is prepended to the
@@ -77,10 +80,12 @@ context as a `'system'` message.
 ```ts
 import { Client } from "@commonbase/sdk";
 
-const client = new Client();
+const client = new Client({
+  apiKey: "API_KEY",
+});
 
-const completionResult = await client.createCompletion({
-  projectId: "<your_project_id>",
+const completion = await client.createCompletion({
+  projectId: "PROJECT_ID",
   prompt: "You are an assistant who helps users with tech problems.",
   chatContext: {
     messages: [
@@ -97,41 +102,33 @@ const completionResult = await client.createCompletion({
   },
 });
 
-console.log(completionResult.bestResult);
+console.log(completion.bestResult);
 ```
 
-### Streaming
+### Variables
 
-To stream the completion response as it is generated, use `Client.createStreamingCompletion`.
-
-Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
-
-For longer completions, streaming lets you avoid hanging while you wait for a completed response
-from `Client.createCompletion`.
+You can also create a completion by providing variables and a template prompt.
 
 ```ts
 import { Client } from "@commonbase/sdk";
 
-const client = new Client();
-
-const completionStream = await client.createStreamingCompletion({
-  projectId: "<your_project_id>",
-  prompt: "Write me a short essay about artificial intelligence.",
+const client = new Client({
+  apiKey: "API_KEY",
 });
 
-for await (const result of completionStream) {
-  if (completionResult.completed) {
-    process.stdout.write("\n\n");
-    console.log("streamCompleted", completionResult);
-    continue;
+const completion = await client.createCompletion({
+  projectId: "PROJECT_ID",
+  prompt: "A new user {{user_name}} just signed up with {{email}}. Say hello!"
+  variables: {
+    user_name: "Alice",
+    email: "alice@example.com"
   }
-  process.stdout.write(completionResult.bestResult);
-}
+});
 
-console.log("done");
+console.log(completion.bestResult);
 ```
 
-## Embeddings
+### Embeddings
 
 An embedding is a vector (list) of floating point numbers. The distance between two vectors
 measures their relatedness. Small distances suggest high relatedness and large distances
@@ -147,11 +144,13 @@ Commonbase supports embeddings through OpenAI's `text-embedding-ada-002` model:
 ```ts
 import { Client } from "@commonbase/sdk";
 
-const client = new Client();
+const client = new Client({
+  apiKey: "API_KEY",
+});
 
-const embeddingsResponse = await client.createEmbedding({
+const embeddings = await client.createEmbedding({
   input: "Your text string",
-  projectId: "<your_project_id>",
+  projectId: "PROJECT_ID",
   providerConfig: {
     provider: "cb-openai-eu",
     params: {
@@ -161,5 +160,34 @@ const embeddingsResponse = await client.createEmbedding({
   },
 });
 
-console.log(embeddingsResponse.data);
+console.log(embeddings.data);
+```
+
+## Streaming
+
+To stream the completion response as it is generated, use `Client.createStreamingCompletion`.
+
+Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
+
+For longer completions, streaming lets you avoid hanging while you wait for a completed response
+from `Client.createCompletion`.
+
+```ts
+import { Client } from "@commonbase/sdk";
+
+const client = new Client({
+  apiKey: "API_KEY",
+});
+
+const completionStream = await client.createStreamingCompletion({
+  projectId: "PROJECT_ID",
+  prompt: "Write me a short essay about artificial intelligence.",
+});
+
+for await (const completion of completionStream) {
+  if (completion.completed) {
+    process.stdout.write("\n\ndone");
+  }
+  process.stdout.write(completion.bestResult);
+}
 ```

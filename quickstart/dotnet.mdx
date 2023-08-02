@@ -4,12 +4,12 @@ description: "Start developing with Commonbase + .NET"
 icon: "brackets-curly"
 ---
 
-> Last updated for NuGet package version `0.1.x`
+> Last updated for NuGet package version `0.2.x`
 
 ## Installation
 
-Install [Commonbase from NuGet](https://www.nuget.org/packages/Commonbase) a package manager or
-the `dotnet` CLI:
+Install [Commonbase from NuGet](https://www.nuget.org/packages/Commonbase)
+using a package manager or the `dotnet` CLI:
 
 ```bash
 dotnet package add Commonbase
@@ -17,8 +17,11 @@ dotnet package add Commonbase
 
 ## Usage
 
-A Project ID is required for all Commonbase requests. You can find your project ID
-in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find your project ID
+and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
+
+To create a completion, configure a `CommonbaseClient` with your API Key and provide
+your Project ID and prompt to `CreateCompletionAsync`.
 
 ### Text Completion
 
@@ -27,14 +30,24 @@ To create a basic text completion, use `CreateCompletionAsync` with a `prompt`:
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new();
+CommonbaseClient client = new(apiKey: "API_KEY");
 
-var response = await client.CreateCompletionAsync(
+var completion = await client.CreateCompletionAsync(
     prompt: "Hello!",
-    projectId: "YOUR_PROJECT_ID"
+    projectId: "PROJECT_ID"
 );
 
-Console.WriteLine(response.BestResult);
+Console.WriteLine(completion.BestResult);
+```
+
+`completion.BestResult` returns the most relevant choice.
+`completion.Choices` contains the fill list of choices returned by the LLM:
+
+```csharp
+foreach (var choice in completion.Choices)
+{
+    Console.WriteLine(choice.Text);
+}
 ```
 
 ### Chat Completion
@@ -46,7 +59,7 @@ as a system message.
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new();
+CommonbaseClient client = new(apiKey: "API_KEY");
 
 string systemMessage = "You are an assistant who helps users with tech problems.";
 ChatMessage[] messages = new[] {
@@ -58,7 +71,7 @@ ChatMessage[] messages = new[] {
 var response = await client.CreateCompletionAsync(
     prompt: systemMessage,
     chatContext: new ChatContext { Messages = messages },
-    projectId: "YOUR_PROJECT_ID",
+    projectId: "PROJECT_ID",
     providerConfig: new CbOpenAIProviderConfig
     {
         Region = CbOpenAIRegion.EU,
@@ -84,11 +97,11 @@ from `CreateCompletionAsync`.
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new();
+CommonbaseClient client = new(apiKey: "API_KEY");
 
 var stream = client.StreamCompletionAsync(
     prompt: "Write me an essay about artificial intelligence.",
-    projectId: "YOUR_PROJECT_ID"
+    projectId: "PROJECT_ID"
 );
 
 await foreach (CompletionResponse response in stream)
@@ -96,6 +109,6 @@ await foreach (CompletionResponse response in stream)
     if (!response.Completed)
         Console.Write(response.BestResult);
     else
-        Console.WriteLine();
+        Console.WriteLine("\n\ndone");
 }
 ```

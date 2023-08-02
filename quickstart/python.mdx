@@ -28,27 +28,35 @@ To create a basic text completion, use `Completion.create` with a `prompt`:
 ```py
 import commonbase
 
-result = commonbase.Completion.create(
-    api_key="YOUR_API_KEY",
-    project_id="YOUR_PROJECT_ID",
+completion = commonbase.Completion.create(
+    api_key="API_KEY",
+    project_id="PROJECT_ID",
     prompt="Hello!"
 )
 
-print(result.best_result)
+print(completion.best_result)
+```
+
+`completion.best_result` returns the most relevant choice.
+`completion.choices` contains the full list of choices returned by the LLM:
+
+```py
+for choice in completion.choices:
+    print(choice.text)
 ```
 
 ### Chat Completion
 
 To create a chat completion, provide a `chat_context` with list of chat messages and set the
-`provider_config.params.type` to `chat`. In this mode, the `prompt` is prepended to the context
+`provider_config.params.type` to `'chat'`. In this mode, the `prompt` is prepended to the context
 as a system message.
 
 ```py
 import commonbase
 
-result = commonbase.Completion.create(
-    api_key="YOUR_API_KEY",
-    project_id="YOUR_PROJECT_ID",
+completion = commonbase.Completion.create(
+    api_key="API_KEY",
+    project_id="PROJECT_ID",
     prompt="You are an assistant who helps users with tech problems.",
     chat_context=commonbase.ChatContext([
         commonbase.ChatMessage(role="user", content="My internet isn't working."),
@@ -60,27 +68,27 @@ result = commonbase.Completion.create(
     ),
 )
 
-print(result.choices[0].text)
+print(completion.best_result)
 ```
 
 ### Variables
 
-You can also create a completion by providing variables for your managed prompt on the
-[Commonbase Dashboard](https://commonbase.com/).
+You can also create a completion by providing variables and a template prompt.
 
 ```py
 import commonbase
 
-result = commonbase.Completion.create(
-    api_key="YOUR_API_KEY",
-    project_id="YOUR_PROJECT_ID",
+completion = commonbase.Completion.create(
+    api_key="API_KEY",
+    project_id="PROJECT_ID",
+    prompt="A new user {{user_name}} just signed up with {{email}}. Say hello!"
     variables={
-        "user_name": "USERNAME",
-        "email": "USERNAME@COMPANY.COM"
+        "user_name": "Alice",
+        "email": "alice@example.com"
     }
 )
 
-print(result.best_result)
+print(completion.best_result)
 ```
 
 ## Streaming
@@ -95,13 +103,13 @@ from `Completion.create`.
 ```py
 import commonbase
 
-result = commonbase.Completion.stream(
-    api_key="YOUR_API_KEY",
-    project_id="YOUR_PROJECT_ID",
+completionStream = commonbase.Completion.stream(
+    api_key="API_KEY",
+    project_id="PROJECT_ID",
     prompt="Write me a short essay about artificial intelligence."
 )
 
-for completion in result:
+for completion in completionStream:
     if not completion.completed:
         print(completion.choices[0].text, end="")
     else:

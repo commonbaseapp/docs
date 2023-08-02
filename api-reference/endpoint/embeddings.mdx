@@ -86,9 +86,10 @@ description: "Generate a new embedding."
 
 ```bash Embedding Request
 curl --location --request POST 'https://api.commonbase.com/embeddings' \
+--header 'Authorization: API_KEY' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "projectId": "<your_project_id>",
+  "projectId": "PROJECT_ID",
   "input": "During the business meeting today, we discussed...",
   "providerConfig": {
     "provider": "cb-openai-eu",
@@ -108,7 +109,7 @@ curl --location --request POST 'https://api.commonbase.com/embeddings' \
 {
   "completed": true,
   "invocationId": "<invocation_id>",
-  "projectId": "<your_project_id>",
+  "projectId": "<project_id>",
   "type": "text",
   "model": "<model_name>",
   "data": [

@@ -37,12 +37,15 @@
       ]
     },
     {
-      "group": "Completions",
-      "pages": ["api-reference/endpoint/completions"]
+      "group": "Introduction",
+      "pages": ["api-reference/authentication"]
     },
     {
-      "group": "Embeddings",
-      "pages": ["api-reference/endpoint/embeddings"]
+      "group": "Request Types",
+      "pages": [
+        "api-reference/endpoint/completions",
+        "api-reference/endpoint/embeddings"
+      ]
     }
   ],
   "footerSocials": {
@@ -50,5 +53,11 @@
     "github": "https://github.com/commonbaseapp",
     "linkedin": "https://www.linkedin.com/company/commonbase"
   },
-  "backgroundImage": "/background.png"
+  "backgroundImage": "/background.png",
+  "api": {
+    "auth": {
+      "method": "key",
+      "name": "Commonbase API Key"
+    }
+  }
 }

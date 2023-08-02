@@ -189,9 +189,10 @@ See provider documentation for more details:
 
 ```bash Text Completion
 curl --location --request POST 'https://api.commonbase.com/completions' \
+--header 'Authorization: API_KEY' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "projectId": "<your_project_id>",
+  "projectId": "PROJECT_ID",
   "prompt": "Hello!",
   "providerConfig": {
     "provider": "cb-openai-eu",
@@ -205,9 +206,10 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
 
 ```bash Chat Completion
 curl --location --request POST 'https://api.commonbase.com/completions' \
+--header 'Authorization: API_KEY' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "projectId": "<your_project_id>",
+  "projectId": "PROJECT_ID",
   "prompt": "You are a helpful assistant.",
   "context": {
     "messages": [
@@ -233,7 +235,7 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
 {
   "completed": true,
   "invocationId": "<invocation_id>",
-  "projectId": "<your_project_id>",
+  "projectId": "<project_id>",
   "type": "text",
   "model": "<model_name>",
   "choices": [

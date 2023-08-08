@@ -10,15 +10,14 @@ description: "Generate or stream a new completion."
   The Commonbase project ID.
 </ParamField>
 
-<ParamField body="userId" type="string">
-  An optional custom string used to identify users in the invocation logs.
-</ParamField>
-
-<ParamField body="prompt" type="string">
+<ParamField body="prompt" type="string" required>
   The text used to generate a completion.
 
-Also functions as a `system` message when `providerConfig.params.type: 'chat'` is set.
+  Also functions as a `system` message when `providerConfig.params.type: 'chat'` is set.
+</ParamField>
 
+<ParamField body="userId" type="string">
+  An optional custom string used to identify users in the invocation logs.
 </ParamField>
 
 <ParamField body="context" type="ChatContext">

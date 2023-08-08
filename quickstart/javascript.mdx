@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + JavaScript/TypeScript"
 icon: "node-js"
 ---
 
-> Last updated for npm package version `0.12.x`
+> Last updated for npm package version `0.13.x`
 
 The Commonbase npm package supports Node.js v18 and later. It also includes TypeScript support.
 
@@ -165,7 +165,7 @@ console.log(embeddings.data);
 
 ## Streaming
 
-To stream the completion response as it is generated, use `Client.createStreamingCompletion`.
+To stream the completion response as it is generated, use `Client.streamCompletion`.
 
 Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
 
@@ -179,7 +179,7 @@ const client = new Client({
   apiKey: "API_KEY",
 });
 
-const completionStream = await client.createStreamingCompletion({
+const completionStream = await client.streamCompletion({
   projectId: "PROJECT_ID",
   prompt: "Write me a short essay about artificial intelligence.",
 });

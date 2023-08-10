@@ -4,11 +4,12 @@ description: "Start developing with Commonbase + Python"
 icon: "python"
 ---
 
-> Last updated for pip package version `0.2.x`
+> Last updated for pip package version `0.3.x`
 
 ## Installation
 
-Install [Commonbase from PyPI](https://pypi.org/project/commonbase/) using `pip`:
+Install [Commonbase from PyPI](https://pypi.org/project/commonbase/) using
+`pip`:
 
 ```bash
 pip install commonbase
@@ -16,10 +17,12 @@ pip install commonbase
 
 ## Usage
 
-A Project ID and API Key are required for all Commonbase requests. You can find your project ID
-and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find
+your project ID and generate an API key in the
+[Commonbase Dashboard](https://commonbase.com/).
 
-To create a completion, provide your Project ID, API Key, and prompt to `Completion.create`.
+To create a completion, provide your Project ID, API Key, and prompt to
+`Completion.create`.
 
 ### Text Completion
 
@@ -37,8 +40,8 @@ completion = commonbase.Completion.create(
 print(completion.best_result)
 ```
 
-`completion.best_result` returns the most relevant choice.
-`completion.choices` contains the full list of choices returned by the LLM:
+`completion.best_result` returns the most relevant choice. `completion.choices`
+contains the full list of choices returned by the LLM:
 
 ```py
 for choice in completion.choices:
@@ -47,9 +50,9 @@ for choice in completion.choices:
 
 ### Chat Completion
 
-To create a chat completion, provide a `chat_context` with list of chat messages and set the
-`provider_config.params.type` to `'chat'`. In this mode, the `prompt` is prepended to the context
-as a system message.
+To create a chat completion, provide a `chat_context` with list of chat messages
+and set the `provider_config.params.type` to `'chat'`. In this mode, the
+`prompt` is prepended to the context as a system message.
 
 ```py
 import commonbase
@@ -95,10 +98,11 @@ print(completion.best_result)
 
 To stream the completion response as it is generated, use `Completion.stream`.
 
-Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
+Streaming is useful when you want to display a completion "as it is typed" for a
+chatbot-like experience.
 
-For longer completions, streaming lets you avoid hanging while you wait for a completed response
-from `Completion.create`.
+For longer completions, streaming lets you avoid hanging while you wait for a
+completed response from `Completion.create`.
 
 ```py
 import commonbase

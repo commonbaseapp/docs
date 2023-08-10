@@ -6,18 +6,19 @@ icon: "node-js"
 
 > Last updated for npm package version `0.13.x`
 
-The Commonbase npm package supports Node.js v18 and later. It also includes TypeScript support.
+The Commonbase npm package supports Node.js v18 and later. It also includes
+TypeScript support.
 
 <Warning>
   This package is meant for server-side usage only. Using it in the browser will
-  expose your project ID. Anyone who has your project ID can make requests to
-  Commonbase on your behalf.
+  expose your API Key and Project ID. With this information, anyone can make
+  requests to Commonbase on your behalf.
 </Warning>
 
 ## Installation
 
-Install [Commonbase from npm](https://www.npmjs.com/package/@commonbase/sdk) using your
-preferred package manager:
+Install [Commonbase from npm](https://www.npmjs.com/package/@commonbase/sdk)
+using your preferred package manager:
 
 <CodeGroup>
 
@@ -37,15 +38,17 @@ yarn add @commonbase/sdk
 
 ## Usage
 
-A Project ID and API Key are required for all Commonbase requests. You can find your project ID
-and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find
+your project ID and generate an API key in the
+[Commonbase Dashboard](https://commonbase.com/).
 
-To create a completion, configure a `Client` with your API Key and provide your Project ID
-and prompt to `createCompletion`.
+To create a completion, configure a `Client` with your API Key and provide your
+Project ID and prompt to `createCompletion`.
 
 ### Text Completion
 
-To create a basic text completion, use `Client.createCompletion` with a `prompt`:
+To create a basic text completion, use `Client.createCompletion` with a
+`prompt`:
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -73,9 +76,9 @@ for (const choice of completion.choices) {
 
 ### Chat Completion
 
-To create a chat completion, provide a `chatContext` with a list of chat messages and set
-the `providerConfig.params.type` to `'chat'`. In this mode, the `prompt` is prepended to the
-context as a `'system'` message.
+To create a chat completion, provide a `chatContext` with a list of chat
+messages and set the `providerConfig.params.type` to `'chat'`. In this mode, the
+`prompt` is prepended to the context as a `'system'` message.
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -130,9 +133,9 @@ console.log(completion.bestResult);
 
 ### Embeddings
 
-An embedding is a vector (list) of floating point numbers. The distance between two vectors
-measures their relatedness. Small distances suggest high relatedness and large distances
-suggest low relatedness.
+An embedding is a vector (list) of floating point numbers. The distance between
+two vectors measures their relatedness. Small distances suggest high relatedness
+and large distances suggest low relatedness.
 
 To learn more about embeddings, see:
 
@@ -165,12 +168,14 @@ console.log(embeddings.data);
 
 ## Streaming
 
-To stream the completion response as it is generated, use `Client.streamCompletion`.
+To stream the completion response as it is generated, use
+`Client.streamCompletion`.
 
-Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
+Streaming is useful when you want to display a completion "as it is typed" for a
+chatbot-like experience.
 
-For longer completions, streaming lets you avoid hanging while you wait for a completed response
-from `Client.createCompletion`.
+For longer completions, streaming lets you avoid hanging while you wait for a
+completed response from `Client.createCompletion`.
 
 ```ts
 import { Client } from "@commonbase/sdk";

@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + Python"
 icon: "python"
 ---
 
-> Last updated for pip package version `0.3.x`
+> Last updated for pip package version `0.4.x`
 
 ## Installation
 
@@ -37,10 +37,10 @@ completion = commonbase.Completion.create(
     prompt="Hello!"
 )
 
-print(completion.best_result)
+print(completion.best_choice.text)
 ```
 
-`completion.best_result` returns the most relevant choice. `completion.choices`
+`completion.best_choice` returns the most relevant choice. `completion.choices`
 contains the full list of choices returned by the LLM:
 
 ```py
@@ -50,28 +50,24 @@ for choice in completion.choices:
 
 ### Chat Completion
 
-To create a chat completion, provide a `chat_context` with list of chat messages
-and set the `provider_config.params.type` to `'chat'`. In this mode, the
-`prompt` is prepended to the context as a system message.
+To create a chat completion, use `ChatCompletion.create` with a list of
+messages.
 
 ```py
 import commonbase
 
-completion = commonbase.Completion.create(
+completion = commonbase.ChatCompletion.create(
     api_key="API_KEY",
     project_id="PROJECT_ID",
-    prompt="You are an assistant who helps users with tech problems.",
-    chat_context=commonbase.ChatContext([
-        commonbase.ChatMessage(role="user", content="My internet isn't working."),
-        commonbase.ChatMessage(role="assistant", content="Have you tried restarting your router?"),
-        commonbase.ChatMessage(role="user", content="Yes I've tried that."),
-    ]),
-    provider_config=commonbase.ProviderConfig(
-        provider="cb-openai-eu", params=commonbase.OpenAIParams(type="chat")
-    ),
+    messages=[
+        { "role": "system", "content": "You are an assistant who helps users with tech problems." },
+        { "role": "user", "content": "My internet isn't working." },
+        { "role": "assistant", "content": "Have you tried restarting your router?" },
+        { "role": "user", "content": "Yes I've tried that." }
+    ]
 )
 
-print(completion.best_result)
+print(completion.best_choice.text)
 ```
 
 ### Variables
@@ -91,31 +87,124 @@ completion = commonbase.Completion.create(
     }
 )
 
-print(completion.best_result)
+print(completion.best_choice.text)
 ```
 
 ## Streaming
 
-To stream the completion response as it is generated, use `Completion.stream`.
+To stream the completion response as it is generated, use
+`ChatCompletion.stream`.
 
 Streaming is useful when you want to display a completion "as it is typed" for a
 chatbot-like experience.
 
 For longer completions, streaming lets you avoid hanging while you wait for a
-completed response from `Completion.create`.
+completed response from `create`.
 
 ```py
 import commonbase
 
-completionStream = commonbase.Completion.stream(
+completionStream = commonbase.ChatCompletion.stream(
     api_key="API_KEY",
     project_id="PROJECT_ID",
-    prompt="Write me a short essay about artificial intelligence."
+    messages=[
+        { "role": "user", "content": "Write me a short essay about artificial intelligence." }
+    ]
 )
 
 for completion in completionStream:
     if not completion.completed:
-        print(completion.choices[0].text, end="")
+        print(completion.best_choice.text, end="")
     else:
+        # The final response from the stream contains the full completion text.
+        # We can ignore it here because we already printed the intermediate results.
         print("\n\ndone")
+```
+
+## Functions
+
+To use OpenAI's
+[Function Calling](https://platform.openai.com/docs/guides/gpt/function-calling)
+feature, make a call to `ChatCompletion.create` and provide a list of functions.
+
+```python
+import commonbase
+import json
+
+# In Production, you'd call a real weather API.
+def get_current_weather(location: str, unit: str = "fahrenheit"):
+    return {
+        "location": location,
+        "temperature": 72,
+        "unit": unit,
+        "forecast": ["sunny", "windy"]
+    }
+
+messages: list[commonbase.ChatMessage] = [
+    { "role": "user", "content": "What's the weather like in Boston?" }
+]
+
+response = commonbase.ChatCompletion.create(
+    api_key="API_KEY",
+    project_id="PROJECT_ID",
+    messages=messages,
+    functions=[
+        {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                },
+                "required": ["location"],
+            },
+        }
+    ]
+)
+
+best_choice = response.best_choice
+
+# Check if GPT wanted to call a function
+if (best_choice.function_call is not None):
+
+    function_name = best_choice.function_call.name
+
+    # The Commonbase SDK deserializes the arguments for you, though it
+    # may not always be valid JSON.
+    #
+    # If the arguments are empty, check function_call.json["arguments"]
+    # to see the raw response from GPT.
+    function_arguments = best_choice.function_call.arguments
+    location, unit = function_arguments.get("location"), function_arguments.get("unit")
+
+    # Only one function in this example, but you can have multiple.
+    available_functions = {
+        "get_current_weather": get_current_weather
+    }
+
+    function_response = available_functions[function_name](location, unit)
+
+    # Extend the conversation with the assistant's reply.
+    messages.append(response.best_choice.to_assistant_chat_message())
+
+    # Extend the conversation with the function response.
+    messages.append({
+        "role": "function",
+        "name": function_name,
+        "content": json.dumps(function_response)
+    })
+
+    # Get a new response from GPT where it can see the function response.
+    second_response = commonbase.ChatCompletion.create(
+        api_key="API_KEY",
+        project_id="PROJECT_ID",
+        messages=messages
+    )
+
+    print(second_response.best_choice.text)
 ```

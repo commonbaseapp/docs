@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + JavaScript/TypeScript"
 icon: "node-js"
 ---
 
-> Last updated for npm package version `0.13.x`
+> Last updated for npm package version `0.14.x`
 
 The Commonbase npm package supports Node.js v18 and later. It also includes
 TypeScript support.
@@ -47,8 +47,7 @@ Project ID and prompt to `createCompletion`.
 
 ### Text Completion
 
-To create a basic text completion, use `Client.createCompletion` with a
-`prompt`:
+To create a basic text completion, use `createCompletion` with a `prompt`:
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -62,10 +61,10 @@ const completion = await client.createCompletion({
   prompt: "Hello!",
 });
 
-console.log(completion.bestResult);
+console.log(completion.bestChoice.text);
 ```
 
-`completion.bestResult` returns the most relevant completion.
+`completion.bestChoice` returns the most relevant completion.
 `completion.choices` contains the full list of choices returned by the LLM:
 
 ```ts
@@ -76,9 +75,7 @@ for (const choice of completion.choices) {
 
 ### Chat Completion
 
-To create a chat completion, provide a `chatContext` with a list of chat
-messages and set the `providerConfig.params.type` to `'chat'`. In this mode, the
-`prompt` is prepended to the context as a `'system'` message.
+To create a chat completion, use `createChatCompletion` with a list of messages.
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -87,25 +84,20 @@ const client = new Client({
   apiKey: "API_KEY",
 });
 
-const completion = await client.createCompletion({
+const completion = await client.createChatCompletion({
   projectId: "PROJECT_ID",
-  prompt: "You are an assistant who helps users with tech problems.",
-  chatContext: {
-    messages: [
-      { role: "user", content: "My internet isn't working." },
-      { role: "assistant", content: "Have you tried restarting your router?" },
-      { role: "user", content: "Yes I've tried that." },
-    ],
-  },
-  providerConfig: {
-    provider: "cb-openai-eu",
-    params: {
-      type: "chat",
+  messages: [
+    {
+      role: "system",
+      content: "You are an assistant who helps users with tech problems.",
     },
-  },
+    { role: "user", content: "My internet isn't working." },
+    { role: "assistant", content: "Have you tried restarting your router?" },
+    { role: "user", content: "Yes I've tried that." },
+  ],
 });
 
-console.log(completion.bestResult);
+console.log(completion.bestChoice.text);
 ```
 
 ### Variables
@@ -128,7 +120,7 @@ const completion = await client.createCompletion({
   }
 });
 
-console.log(completion.bestResult);
+console.log(completion.bestChoice.text);
 ```
 
 ### Embeddings
@@ -154,13 +146,6 @@ const client = new Client({
 const embeddings = await client.createEmbedding({
   input: "Your text string",
   projectId: "PROJECT_ID",
-  providerConfig: {
-    provider: "cb-openai-eu",
-    params: {
-      type: "embeddings",
-      model: "text-embedding-ada-002",
-    },
-  },
 });
 
 console.log(embeddings.data);
@@ -169,13 +154,13 @@ console.log(embeddings.data);
 ## Streaming
 
 To stream the completion response as it is generated, use
-`Client.streamCompletion`.
+`streamChatCompletion`.
 
 Streaming is useful when you want to display a completion "as it is typed" for a
 chatbot-like experience.
 
 For longer completions, streaming lets you avoid hanging while you wait for a
-completed response from `Client.createCompletion`.
+completed response from `createChatCompletion`.
 
 ```ts
 import { Client } from "@commonbase/sdk";
@@ -184,15 +169,20 @@ const client = new Client({
   apiKey: "API_KEY",
 });
 
-const completionStream = await client.streamCompletion({
+const completionStream = await client.streamChatCompletion({
   projectId: "PROJECT_ID",
-  prompt: "Write me a short essay about artificial intelligence.",
+  messages: [
+    {
+      role: "user",
+      content: "Write me a short essay about artificial intelligence.",
+    },
+  ],
 });
 
 for await (const completion of completionStream) {
   if (completion.completed) {
     process.stdout.write("\n\ndone");
   }
-  process.stdout.write(completion.bestResult);
+  process.stdout.write(completion.bestChoice.text);
 }
 ```

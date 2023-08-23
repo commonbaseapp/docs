@@ -10,32 +10,31 @@ description: "Generate or stream a new completion."
   The Commonbase project ID.
 </ParamField>
 
-<ParamField body="prompt" type="string" required>
-  The text used to generate a completion.
-
-  Also functions as a `system` message when `providerConfig.params.type: 'chat'` is set.
-</ParamField>
-
 <ParamField body="userId" type="string">
   An optional custom string used to identify users in the invocation logs.
 </ParamField>
 
-<ParamField body="context" type="ChatContext">
-  A list of messages that represent the chat context.
-  `providerConfig.params.type` must be set to `'chat'`, otherwise this context
-  is ignored.
-  <Expandable title="ChatContext">
-    <ResponseField name="messages" type="ChatMessage[]">
-      A list of messages that represent a chat conversation.
-      <Expandable title="ChatMessage Properties">
-        <ParamField body="role" type="'system' | 'assistant' | 'user'">
-          The role of the chat message.
-        </ParamField>
-        <ParamField body="content" type="string">
-          The content of the chat message.
-        </ParamField>
-      </Expandable>
-    </ResponseField>
+<ParamField body="prompt" type="string">
+  The text used to generate a completion when `providerConfig.params.type:
+  'text'` is set.
+
+One of `prompt` or `messages` must be sent with each request.
+
+</ParamField>
+
+<ParamField body="messages" type="ChatMessage[]">
+  A list of messages for chat completions. `providerConfig.params.type` must be
+  set to `'chat'`, otherwise these messages are ignored.
+
+One of `prompt` or `messages` must be sent with each request.
+
+  <Expandable title="ChatMessage Properties">
+    <ParamField body="role" type="'system' | 'assistant' | 'user' | 'function'">
+      The role of the chat message.
+    </ParamField>
+    <ParamField body="content" type="string">
+      The content of the chat message.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -164,8 +163,8 @@ description: "Generate or stream a new completion."
 
 <ResponseField name="choices" type="object[]">
 
-The result of the completion. The structure of this object may vary depending on the provider
-and `type` of completion that is requested.
+The result of the completion. The structure of this object may vary depending on
+the provider and `type` of completion that is requested.
 
 See provider documentation for more details:
 
@@ -209,14 +208,12 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "projectId": "PROJECT_ID",
-  "prompt": "You are a helpful assistant.",
-  "context": {
-    "messages": [
-      { "role": "user", "content": "Can I have some help please?" },
-      { "role": "assistant", "content": "Sure! What can I help you with?" },
-      { "role": "user", "content": "My internet is broken." }
-    ]
-  },
+  "messages": [
+    { "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "Can I have some help please?" },
+    { "role": "assistant", "content": "Sure! What can I help you with?" },
+    { "role": "user", "content": "My internet is broken." }
+  ],
   "providerConfig": {
     "provider": "cb-openai-eu",
     "params": {

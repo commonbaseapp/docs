@@ -4,12 +4,12 @@ description: "Start developing with Commonbase + .NET"
 icon: "brackets-curly"
 ---
 
-> Last updated for NuGet package version `0.2.x`
+> Last updated for NuGet package version `0.3.x`
 
 ## Installation
 
-Install [Commonbase from NuGet](https://www.nuget.org/packages/Commonbase)
-using a package manager or the `dotnet` CLI:
+Install [Commonbase from NuGet](https://www.nuget.org/packages/Commonbase) using
+a package manager or the `dotnet` CLI:
 
 ```bash
 dotnet package add Commonbase
@@ -17,11 +17,12 @@ dotnet package add Commonbase
 
 ## Usage
 
-A Project ID and API Key are required for all Commonbase requests. You can find your project ID
-and generate an API key in the [Commonbase Dashboard](https://commonbase.com/).
+A Project ID and API Key are required for all Commonbase requests. You can find
+your project ID and generate an API key in the
+[Commonbase Dashboard](https://commonbase.com/).
 
-To create a completion, configure a `CommonbaseClient` with your API Key and provide
-your Project ID and prompt to `CreateCompletionAsync`.
+To create a completion, configure a `CommonbaseClient` with your API Key and
+provide your Project ID and prompt to `CreateCompletionAsync`.
 
 ### Text Completion
 
@@ -30,18 +31,17 @@ To create a basic text completion, use `CreateCompletionAsync` with a `prompt`:
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new(apiKey: "API_KEY");
+CommonbaseClient client = new(apiKey: "API_KEY", projectId: "PROJECT_ID");
 
 var completion = await client.CreateCompletionAsync(
-    prompt: "Hello!",
-    projectId: "PROJECT_ID"
+    prompt: "Hello!"
 );
 
-Console.WriteLine(completion.BestResult);
+Console.WriteLine(completion.BestChoice.Text);
 ```
 
-`completion.BestResult` returns the most relevant choice.
-`completion.Choices` contains the fill list of choices returned by the LLM:
+`completion.BestChoice` returns the most relevant choice. `completion.Choices`
+contains the fill list of choices returned by the LLM:
 
 ```csharp
 foreach (var choice in completion.Choices)
@@ -52,63 +52,53 @@ foreach (var choice in completion.Choices)
 
 ### Chat Completion
 
-To create a chat completion, provide a `chatContext` with list of chat messages and set the
-`ProviderConfig.Params.Type` to `chat`. In this mode, the `prompt` is prepended to the context
-as a system message.
+To create a chat completion, use `CreateChatCompletionAsync` with a list of
+messages.
 
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new(apiKey: "API_KEY");
+CommonbaseClient client = new(apiKey: "API_KEY", projectId: "PROJECT_ID");
 
-string systemMessage = "You are an assistant who helps users with tech problems.";
 ChatMessage[] messages = new[] {
+    new ChatMessage { Role = MessageRole.System, Content = "You help users with tech problems." },
     new ChatMessage { Role = MessageRole.User, Content = "My internet isn't working." },
     new ChatMessage { Role = MessageRole.Assistant, Content = "Have you tried restarting your router?" },
     new ChatMessage { Role = MessageRole.User, Content = "Yes I've tried that." },
 };
 
-var response = await client.CreateCompletionAsync(
-    prompt: systemMessage,
-    chatContext: new ChatContext { Messages = messages },
-    projectId: "PROJECT_ID",
-    providerConfig: new CbOpenAIProviderConfig
-    {
-        Region = CbOpenAIRegion.EU,
-        Params = new()
-        {
-            Type = RequestType.Chat
-        }
-    }
+var response = await client.CreateChatCompletionAsync(
+    messages: messages
 );
 
-Console.WriteLine(response.BestResult);
+Console.WriteLine(response.BestChoice.Text);
 ```
 
 ## Streaming
 
-To stream the completion response as it is generated, use `StreamCompletionAsync`.
+To stream the completion response as it is generated, use
+`StreamCompletionAsync`.
 
-Streaming is useful when you want to display a completion "as it is typed" for a chatbot-like experience.
+Streaming is useful when you want to display a completion "as it is typed" for a
+chatbot-like experience.
 
-For longer completions, streaming lets you avoid hanging while you wait for a completed response
-from `CreateCompletionAsync`.
+For longer completions, streaming lets you avoid hanging while you wait for a
+completed response from `CreateCompletionAsync`.
 
 ```csharp
 using Commonbase;
 
-CommonbaseClient client = new(apiKey: "API_KEY");
+CommonbaseClient client = new(apiKey: "API_KEY", projectId: "PROJECT_ID");
 
 var stream = client.StreamCompletionAsync(
-    prompt: "Write me an essay about artificial intelligence.",
-    projectId: "PROJECT_ID"
+    prompt: "Write me an essay about artificial intelligence."
 );
 
 await foreach (CompletionResponse response in stream)
 {
     if (!response.Completed)
-        Console.Write(response.BestResult);
+        Console.Write(response.BestChoice.Text);
     else
-        Console.WriteLine("\n\ndone");
+        Console.WriteLine();
 }
 ```

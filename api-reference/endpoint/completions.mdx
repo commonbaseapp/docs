@@ -38,6 +38,27 @@ One of `prompt` or `messages` must be sent with each request.
   </Expandable>
 </ParamField>
 
+<ParamField body="functions" type="ChatFunction[]">
+  A list of functions that the LLM can call.
+
+  <Expandable title="ChatFunction Properties">
+    <ParamField body="name" type="string" required>
+      The name of the function that the LLM can call.
+    </ParamField>
+    <ParamField body="description" type="string" required>
+      A description to help the LLM understand what the function does.
+    </ParamField>
+    <ParamField body="parameters" type="any">
+      See [OpenAI Docs](https://platform.openai.com/docs/guides/gpt/function-calling) 
+      for how to describe function parameters.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="functionCall" type="'none' | 'auto' | { name: string }">
+  A parameter used to tell the LLM to call a specific function.
+</ParamField>
+
 <ParamField body="providerConfig" type="ProviderConfig">
   The completion provider configuration. A different configuration object is
   used for each provider.

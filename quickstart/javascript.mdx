@@ -4,7 +4,7 @@ description: "Start developing with Commonbase + JavaScript/TypeScript"
 icon: "node-js"
 ---
 
-> Last updated for npm package version `0.15.x`
+> Last updated for npm package version `0.15.2`
 
 The Commonbase npm package supports Node.js v18 and later. It also includes
 TypeScript support.
@@ -185,4 +185,27 @@ for await (const completion of completionStream) {
   }
   process.stdout.write(completion.bestChoice.text);
 }
+```
+
+## Usage
+
+To get the costs and token counts of the request and response, use `showUsage: true` parameter in the request body.
+
+```ts
+import { Client } from "@commonbase/sdk";
+
+const client = new Client({
+  apiKey: "API_KEY",
+});
+
+const completionStream = await client.streamChatCompletion({
+  projectId: "PROJECT_ID",
+  messages: [
+    {
+      role: "user",
+      content: "Write me a short essay about artificial intelligence please.",
+    },
+  ],
+  showUsage: true,
+});
 ```

@@ -159,6 +159,10 @@ One of `prompt` or `messages` must be sent with each request.
   Determines whether to stream a response as it is generated.
 </ParamField>
 
+<ParamField body="showUsage" type="boolean" default="false">
+  Determines whether to return token count and cost of the LLM response.
+</ParamField>
+
 ### Success Response
 
 <ResponseField name="completed" type="boolean">
@@ -194,6 +198,25 @@ See provider documentation for more details:
 
 </ResponseField>
 
+<ResponseField name="usage" type="object">
+  The usage information about the token costs of the invocation.
+  <Expandable title="Token usage properties">
+    <ResponseField name="total_tokens" type="int">
+      The total number of tokens used for the invocation.
+    </ResponseField>
+    <ResponseField name="prompt_tokens" type="int">
+      The number of tokens in the invocation prompt.
+    </ResponseField>
+    <ResponseField name="completion_tokens" type="int">
+      The number of tokens in the invocation response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="usage_cost" type="float">
+  The cost of the invocation in dollars.
+</ResponseField>
+
 ### Error Response
 
 <ResponseField name="error" type="string">
@@ -219,7 +242,9 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
       "type": "text",
       "model": "<model_name>"
     }
-  }
+  },
+  "stream": true,
+  "showUsage": true
 }'
 ```
 
@@ -240,7 +265,9 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
     "params": {
       "type": "chat"
     }
-  }
+  },
+  "stream": true,
+  "showUsage": true
 }'
 ```
 
@@ -262,7 +289,13 @@ curl --location --request POST 'https://api.commonbase.com/completions' \
       "finish_reason": "stop",
       "logprobs": null
     }
-  ]
+  ],
+  "usage": {
+    "total_tokens": "124",
+    "prompt_tokens": "37",
+    "total_tokens": "87"
+  },
+  "usage_cost": 0.0004
 }
 ```
 
